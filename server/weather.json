@@ -1,0 +1,19 @@
+{
+    "mcpServers":{
+        "weather": {
+            "command": "uv",
+            "args": [
+              "run",
+              "--with",
+              "mcp[cli]",
+              "mcp",
+              "run",
+              "C:\\Users\\SOFT SUAVE A-3\\Desktop\\mcp_tutorial\\server\\weather.py"
+            ]
+        },
+      "kite": {
+            "command": "npx",
+            "args": ["mcp-remote", "https://mcp.kite.trade/sse"]
+        }
+    }
+}

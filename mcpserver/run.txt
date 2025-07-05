@@ -1,0 +1,152 @@
+# MCP Weather Server Testing Guide
+
+## Method 1: Testing with STDIO Transport (Recommended)
+
+### Step 1: Run the client (which will start the server automatically)
+```bash
+python client-stdio.py
+```
+
+**What happens:**
+- The client starts the server as a subprocess
+- Server runs with stdio transport (communicates via stdin/stdout)
+- Client connects to server and tests the tools
+- Both processes terminate when done
+
+**Expected Output:**
+```
+Available tools:
+  - get_alerts: Get weather alerts for a US state.
+  - get_forecast: Get weather forecast for a location.
+The weather alerts are = [Alert information for CA]
+```
+
+---
+
+## Method 2: Testing with SSE Transport
+
+### Step 1: Start the server
+```bash
+python server.py sse
+```
+
+**Expected Output:**
+```
+Running server with SSE transport
+Server running on http://0.0.0.0:8000
+```
+
+### Step 2: In another terminal, run the client
+```bash
+python client-sse.py
+```
+
+**Expected Output:**
+```
+Available tools:
+  - get_alerts: Get weather alerts for a US state.
+  - get_forecast: Get weather forecast for a location.
+The weather alerts are = [Alert information for CA]
+```
+
+---
+
+## Troubleshooting Common Issues
+
+### Issue 1: Module Not Found
+```bash
+# Error: ModuleNotFoundError: No module named 'mcp'
+# Solution:
+pip install mcp
+# or
+uv add mcp
+```
+
+### Issue 2: Connection Refused (SSE)
+```bash
+# Error: Connection refused when running SSE client
+# Solution: Make sure server is running first
+python server.py sse
+# Then in another terminal:
+python client-sse.py
+```
+
+### Issue 3: No Alerts Found
+```bash
+# This is normal - it means no active weather alerts
+# Try different states: CA, FL, TX, etc.
+```
+
+### Issue 4: API Rate Limiting
+```bash
+# The National Weather Service may rate limit requests
+# Wait a few seconds between tests
+```
+
+### Issue 5: Network Issues
+```bash
+# Check internet connection
+# The server needs to reach api.weather.gov
+```
+
+---
+
+## Expected Behavior
+
+### Successful Alert Response:
+```
+Event: Heat Advisory
+Area: Los Angeles County
+Severity: Minor
+Description: Hot temperatures expected...
+Instructions: Take extra precautions...
+```
+
+### Successful Forecast Response:
+```
+Tonight:
+Temperature: 65°F
+Wind: 10 mph W
+Forecast: Partly cloudy with overnight lows...
+---
+Thursday:
+Temperature: 78°F
+Wind: 5 mph SW
+Forecast: Sunny skies with light winds...
+```
+
+### No Alerts Response:
+```
+No active alerts for this state.
+```
+
+---
+
+## File Structure
+Make sure your files are organized like this:
+```
+project/
+├── server.py
+├── client-stdio.py
+├── client-sse.py
+├── test_alerts.py (optional)
+└── test_forecast.py (optional)
+```
+
+---
+
+## Quick Start Commands
+
+```bash
+# 1. Install dependencies
+pip install mcp httpx nest-asyncio
+
+# 2. Test with stdio (easiest)
+python client-stdio.py
+
+# 3. Test with SSE (two terminals)
+# Terminal 1:
+python server.py sse
+# Terminal 2:
+python client-sse.py
+```
